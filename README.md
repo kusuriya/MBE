@@ -62,6 +62,8 @@ Lecture | Title | Topics
 14 | Exploitation on 64bit, ARM, Windows | Exploitation differences on other architectures & platforms
 15 | Automation & The Future of Exploitation | Fuzzing, taint analysis, dynamic instrumentation, SMT/SAT solvers
 
+*Refer to [ERRATA.md](https://github.com/RPISEC/MBE/blob/master/ERRATA.md) for slide corrections.*
+
 ### Lab Breakdown
 Lab | Topic | Corresponding Lectures
 --- | ----- | ----------------------
@@ -82,9 +84,9 @@ Lab | Topic | Corresponding Lectures
 ### Repository Breakdown
 * [src/](/src) - Source code for labs
 * [setup_wargame.sh](/setup_wargame.sh),[external_tools.sh](/external_tools.sh) - Install scripts to setup MBE on an Ubuntu 14.04 32-bit machine
-* [MBE_release.tar.gz](https://github.com/RPISEC/MBE/releases/download/v1.0_release/MBE_release.tar.gz) - Binaries for labs and projects
-* [MBE_lectures.tar.gz](https://github.com/RPISEC/MBE/releases/download/v1.0_release/MBE_lectures.tar.gz) - PDFs of all lecture slides
-* [MBE_VM.vmdk.gz](https://github.com/RPISEC/MBE/releases/download/v1.0_release/MBE_VM.vmdk.gz) - A vmdk (disk image) of a VM that is already setup
+* [MBE_release.tar.gz](https://github.com/RPISEC/MBE/releases/download/v1.1_release/MBE_release.tar.gz) - Binaries for labs and projects
+* [MBE_lectures.tar.gz](https://github.com/RPISEC/MBE/releases/download/v1.1_release/MBE_lectures.tar.gz) - PDFs of all lecture slides
+* [MBE_VM.vmdk.gz](https://github.com/RPISEC/MBE/releases/download/v1.1_release/MBE_VM.vmdk.gz) - A vmdk (disk image) of a VM that is already setup
 
 ## Labs - The RPISEC Warzone
 
@@ -92,7 +94,7 @@ The Warzone is a custom wargame that was built from the ground up for this cours
 a complete and consistent learning platform for us to release the labs and projects to the
 students. The wargame was built ontop of a vanilla Ubuntu 14.04 32-bit server install, and is
 modeled after existing local privilege escalation themed wargames. If you have ever played
-the fantastic [SmashTheStack IO](http://io.smashthestack.org/) wargame, the Warzone has a
+the fantastic [IO wargame](https://io.netgarage.org/) (formerly hosted at SmashTheStack), the Warzone has a
 somewhat similar structure.
 
 <p align="center">
@@ -125,7 +127,7 @@ VMware provides a great [2 minute video](https://www.youtube.com/watch?v=I6WfFLQ
 <a href="https://www.youtube.com/watch?v=I6WfFLQwoPg"><img src="/resources/images/vmware.png" alt="Final"/></a>
 </p>
 
-1. Download [MBE_VM.vmdk.gz](https://github.com/RPISEC/MBE/releases/download/v1.0_release/MBE_VM.vmdk.gz) from our release page
+1. Download [MBE_VM.vmdk.gz](https://github.com/RPISEC/MBE/releases/download/v1.1_release/MBE_VM.vmdk.gz) from our release page
 2. Extract the archive to obtain the disk image
 3. Using VMware go to `File->New Virtual Machine...` and create a Custom VM
 4. When prompted for `Guest Operating System Installation`, select `I will install the operating system later`
@@ -149,8 +151,8 @@ We tried to keep the course fairly self contained but if you find yourself lost 
   <img src="/resources/images/ip_addr.png" alt="ip addr"/>
   </p>
   and then SSH using [PuTTY](http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe) or a command line client<br>
-  ```$ ssh lab1C@172.16.29.130```<br>
-  ```lab1C@172.16.130's password: lab01start```<br>
+  <code>$ ssh lab1C@172.16.29.130</code><br>
+  <code>lab1C@172.16.130's password: lab01start</code><br>
 * Navigate to `/levels/labXX` to begin<br>
   ```$ cd /levels/lab01```
 * The Warzone is structured like any local privilege escalation wargame.
@@ -161,6 +163,7 @@ Once you exploit a level and escalate to the next user (confirm with `whoami`), 
 
 #### VM information
 * admin user: `gameadmin:gameadmin`
+* lecture user: `lecture:lecture`
 * rc files are in `/etc/cfg`
   * All lab/project users have symlinks to these files in their home directories
   * These files are also symlinked in `/etc/skel`
@@ -180,7 +183,7 @@ We have provided a bash script that will fully setup the exact environment in th
 
 **DO NOT RUN THIS SCRIPT ON YOUR PERSONAL COMPUTER, RUN IT IN A VIRTUAL MACHINE**
 
-1. Download [MBE_release.tar.gz](https://github.com/RPISEC/MBE/releases/download/v1.0_release/MBE_release.tar.gz)
+1. Download [MBE_release.tar.gz](https://github.com/RPISEC/MBE/releases/download/v1.1_release/MBE_release.tar.gz)
 2. Move the archive to your VM or machine and extract it <br>
   **NOTE: It is not recommended to run the script from /tmp, as the sticky bits can screw up wildcards** <br>
   ```$ tar xzvf MBE_release.tar.gz```
@@ -194,6 +197,21 @@ number of Ubuntu updates.
 
 #### Why can't I login to lab1c?
 Account names are case sensitive, so please check that you're logging in as lab1**C**
+
+#### Why am I getting 'permission denied' errors?
+The warzone marks many files as immutable to prevent users from changing them and
+ruining the game for other players. For example, we don't want the lab2B user to
+delete its `.pass` file or `/levels` files. A few system files, such as `/etc/passwd`,
+are also marked immutable. 
+
+If you would like to modify or delete these files simply remove the immutable flag
+```bash
+chattr -i filename
+```
+We recommend that you add the flag back when you are done making your changes
+```bash
+chattr +i filename
+```
 
 #### Where are the lab solutions?
 Posting solutions spoils the fun and grind of the game, and as an academic resource it is
@@ -266,6 +284,7 @@ International license [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/
 <p align="center">
 <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="/resources/images/cc-by-nc.png" alt="CC BY-NC 4.0"/></a>
 </p>
+
 **Code**
 
 The code in this repo is covered by the BSD 2-Clause license. You can view this license in [LICENSE](/LICENSE).

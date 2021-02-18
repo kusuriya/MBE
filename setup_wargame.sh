@@ -3,10 +3,22 @@
 #########################################
 #          Pre-install checks
 #########################################
+
+# Warn the user about running this on their host machine
+# (because it makes various invasive settings-changes, and runs a ton of vulnerable services)
+echo -e "\x1b[31;1mDON'T RUN THIS ON YOUR REAL COMPUTER\x1b[0m"
+echo "Are you running this inside a VM? (If you don't know what that means, don't run the script.)"
+read -p "(yes/no)> "
+if [ "$REPLY" != 'yes' ]; then
+    exit
+fi
+
 if [ "$USER" != 'root' ]; then
     echo "ERROR: Script must be run using root!"
     exit
 fi
+
+echo -e "\x1b[32;1mProceeding with the installation.\x1b[0m"
 
 #########################################
 #     Per-Machine Install Variables
@@ -329,8 +341,10 @@ fi
 
 # Add LICENSE and ACKNOWLEDGEMENTS
 cp LICENSE $LEVELS_DIR/LICENSE
+cp LICENSE $LEVELS_DIR/CHANGELOG
 cp ACKNOWLEDGEMENTS $LEVELS_DIR/ACKNOWLEDGEMENTS
 chmod 444 $LEVELS_DIR/ACKNOWLEDGEMENTS
+chmod 444 $LEVELS_DIR/CHANGELOG
 chmod 444 $LEVELS_DIR/LICENSE
 
 # Add lab01
@@ -417,7 +431,7 @@ setup_level $lab $lab'_priv' 'm0_tw33ts_m0_ch4inz_n0_m0n3y' $lab level_files[@] 
 lab=project2
 level_files=('rpisec_nuke' 'README' 'GENERAL_CROWELL.key' 'GENERAL_DOOM.key' 'GENERAL_HOTZ.key')
 level_owners=($lab'_priv:'$lab $lab':'$lab $lab'_priv:'$lab $lab'_priv:'$lab $lab'_priv:'$lab)
-level_perms=('4550' '0400' '0400' '0400' '0400')
+level_perms=('0550' '0400' '0400' '0400' '0400')
 setup_level $lab $lab'_priv' 'th3_pr1nt_funct10n_w4s_100_l!n3s_al0ne' $lab level_files[@] level_owners[@] level_perms[@]
 add_socat_on_start "$LEVELS_DIR/project2" "timeout 300 $LEVELS_DIR/project2/rpisec_nuke" 31337 $lab'_priv'
 
